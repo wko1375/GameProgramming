@@ -21,8 +21,8 @@ ShaderProgram program;
 glm::mat4 viewMatrix, ctgMatrix, projectionMatrix, fireballMatrix;
 float object1_x = 0.0f;
 float object1_y = 0.0f;
-float object1_rotate = 0.0f;
 float object2_rotate = 0.0f;
+float object2_x = 0.0f;
 GLuint ctgTextureID;
 GLuint fireballTextureID;
 
@@ -99,16 +99,15 @@ void Update() {
 	float deltaTime = ticks - lastTicks;
 	lastTicks = ticks;
 
-	object1_rotate += 90.0f * deltaTime;
-	object1_x += 0.1f * deltaTime;
-
+	object1_x += 0.3f * deltaTime;
+	object2_x += 0.1f * deltaTime;
 	object2_rotate += 45.0f * deltaTime;
 
 	ctgMatrix = glm::mat4(1.0f);
 	ctgMatrix = glm::translate(ctgMatrix, glm::vec3(object1_x, 0.0f, 0.0f));
-	ctgMatrix = glm::rotate(ctgMatrix, glm::radians(object1_rotate), glm::vec3(0.0f, 0.0f, 1.0f));
 	fireballMatrix = glm::mat4(1.0f);
-	fireballMatrix = glm::rotate(fireballMatrix, glm::radians(object2_rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+	fireballMatrix = glm::translate(fireballMatrix, glm::vec3(0.0f, 0.0f, 1.0f));
+	fireballMatrix = glm::rotate(fireballMatrix, glm::radians(object2_rotate), glm::vec3(0.0f, 0.0f,1.0f));
 }
 
 void Drawctg() {

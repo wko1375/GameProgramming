@@ -18,11 +18,11 @@ SDL_Window * displayWindow;
 bool gameIsRunning = true;
 
 ShaderProgram program;
-glm::mat4 viewMatrix, leftMatrix, projectionMatrix, rightMatrix, ballMatrix;
+glm::mat4 viewMatrix, projectionMatrix, ballMatrix, leftMatrix, rightMatrix;
 glm::vec3 left_paddle_movement = glm::vec3(0, 0, 0);
 glm::vec3 right_paddle_movement = glm::vec3(0, 0, 0);
-glm::vec3 left_paddle_position = glm::vec3(0, 0, 0);
-glm::vec3 right_paddle_position = glm::vec3(0, 0, 0);
+glm::vec3 left_paddle_position = glm::vec3(-4, 0, 0);
+glm::vec3 right_paddle_position = glm::vec3(4, 0, 0);
 glm::vec3 ball_movement = glm::vec3(0, 0, 0);
 glm::vec3 ball_position = glm::vec3(0, 0, 0);
 
@@ -73,7 +73,7 @@ void ProcessInput() {
 		case SDL_KEYDOWN:
 			switch (event.key.keysym.sym) {
 			case SDLK_SPACE:
-				ball_movement.y = 1.0f;
+				ball_movement.y = 0.75f;
 				ball_movement.x = 1.0f;
 			}
 		}
@@ -121,9 +121,19 @@ void Update() {
 	float rightxdist = fabs(right_paddle_position.x - ball_position.x) - ((0.3f + 0.2f) / 2.0f);
 	float rightydist = fabs(right_paddle_position.y - ball_position.y) - ((2.0f + 0.2f) / 2.0f);
 
+	float leftxdist = fabs(left_paddle_position.x - ball_position.x) - ((0.3f + 0.2f) / 2.0f);
+	float leftydist = fabs(left_paddle_position.y - ball_position.y) - ((2.0f + 0.2f) / 2.0f);
+
 	if (rightxdist < 0 && rightydist < 0) {
-		printf("Collided");
+		ball_movement.x *= -1.0f;
+		ball_movement.y *= -1.0f;
 	}
+
+	else if (leftxdist < 0 && leftydist < 0) {
+		ball_movement.x *= -1.0f;
+		ball_movement.y *= -1.0f;
+	}
+
 
 	ball_position += ball_movement * deltaTime;
 	
@@ -147,14 +157,14 @@ void Render() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	program.SetColor(0.0f, 0.0f, 0.0f, 1.0f);
 	program.SetModelMatrix(leftMatrix);
-	float vertices[] = { -4.15f, 1.0f, -3.85f, 1.0f, -4.15f, -1.0f, -3.85f, 1.0f, -4.15f, -1.0f, -3.85f, -1.0f };
+	float vertices[] = { -0.15f, 1.0f, 0.15f, 1.0f, -0.15f, -1.0f, 0.15f, 1.0f, -0.15f, -1.0f, 0.15f, -1.0f };
 	glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, vertices);
 	glEnableVertexAttribArray(program.positionAttribute);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(program.positionAttribute);
 
 	program.SetModelMatrix(rightMatrix);
-	float rightVertices[] = { 4.15f, 1.0f, 3.85f, 1.0f, 4.15f, -1.0f, 3.85f, 1.0f, 4.15f, -1.0f, 3.85f, -1.0f };
+	float rightVertices[] = { 0.15f, 1.0f, -0.15f, 1.0f, 0.15f, -1.0f, -0.15f, 1.0f, 0.15f, -1.0f, -0.15f, -1.0f };
 	glVertexAttribPointer(program.positionAttribute, 2, GL_FLOAT, false, 0, rightVertices);
 	glEnableVertexAttribArray(program.positionAttribute);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
